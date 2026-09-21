@@ -10,3 +10,5 @@
 .ref-chip{padding-bottom:20px}.ref-chip select{position:absolute;left:0;bottom:0;width:50px;height:19px;padding:0 2px;border:0;border-radius:4px;background:#303034;color:#eee;font-size:9px}
 
 .import-tip{font-size:9px;color:#778398;text-align:center;line-height:1.35;margin:0 2px 8px}
+
+.editor-bottom button+button{margin-left:2px}
