@@ -6,24 +6,34 @@ title Qwen Canvas Installer
 echo ========================================
 echo Qwen Canvas Installer - Windows NVIDIA
 echo ========================================
-where python >nul 2>nul
-if errorlevel 1 goto :python_missing
+set "PYEXE="
+where py >nul 2>nul
+if not errorlevel 1 (
+ py -3.11 -c "import sys;print(sys.executable)" >nul 2>nul
+ if not errorlevel 1 set "PYEXE=py -3.11"
+)
+if not defined PYEXE (
+ where python >nul 2>nul
+ if not errorlevel 1 (
+  python -c "import sys;exit(0 if sys.version_info[:2]==(3,11) else 1)" >nul 2>nul
+  if not errorlevel 1 set "PYEXE=python"
+ )
+)
+if not defined PYEXE goto :python_missing
 where node >nul 2>nul
 if errorlevel 1 goto :node_missing
 where git >nul 2>nul
 if errorlevel 1 goto :git_missing
-python -c "import sys; exit(0 if sys.version_info[:2]==(3,11) else 1)"
-if errorlevel 1 goto :python_version
-if not exist ".venv\Scripts\python.exe" python -m venv ".venv"
+if not exist ".venv\Scripts\python.exe" %PYEXE% -m venv ".venv"
 if errorlevel 1 goto :fail
 call ".venv\Scripts\activate.bat"
 python -m pip install --upgrade pip
 if errorlevel 1 goto :fail
 echo [1/3] Installing NVIDIA CUDA PyTorch...
-pip install torch torchvision --index-url https://download.pytorch.org/whl/cu128
+python -m pip install torch torchvision --index-url https://download.pytorch.org/whl/cu128
 if errorlevel 1 goto :fail
 echo [2/3] Installing Qwen Canvas backend...
-pip install -r "backend\requirements.txt"
+python -m pip install -r "backend\requirements.txt"
 if errorlevel 1 goto :fail
 echo [3/3] Installing frontend...
 pushd "frontend"
@@ -39,10 +49,8 @@ echo ========================================
 pause
 exit /b 0
 :python_missing
-echo [ERROR] Python not found. Install Python 3.11 x64 and enable Add to PATH.
-goto :stop
-:python_version
-echo [ERROR] Python 3.11 x64 is required for this build.
+echo [ERROR] Python 3.11 was not found.
+echo Install Python 3.11 x64, or verify with: py -3.11 --version
 goto :stop
 :node_missing
 echo [ERROR] Node.js not found. Install Node.js 20 or newer.
