@@ -1,0 +1,1 @@
+{"scripts":{"dev":"vite --host 127.0.0.1 --port 7860","build":"vite build"},"dependencies":{"react":"^19.1.1","react-dom":"^19.1.1","react-konva":"^19.0.10","konva":"^9.3.22"},"devDependencies":{"@vitejs/plugin-react":"^5.0.2","vite":"^7.1.5","typescript":"^5.9.2"}}
