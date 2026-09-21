@@ -6,3 +6,5 @@
 .context-toolbar{position:fixed;z-index:31;left:50%;top:66px;transform:translateX(-50%);display:flex;gap:3px;padding:6px;background:#202124;border:1px solid #34363a;border-radius:13px;box-shadow:0 12px 35px #0008}.context-toolbar button{white-space:nowrap;border:0;background:transparent;color:#eceef2;border-radius:8px;padding:9px 11px;font-size:12px}.context-toolbar button:hover{background:#34363a}
 
 .editor-ref{overflow-x:auto}.ref-chip{position:relative;display:inline-flex;flex:0 0 auto}.ref-chip img{width:50px;height:50px;object-fit:cover;border-radius:8px}.ref-chip button{position:absolute;right:-5px;top:-5px;width:18px!important;height:18px!important;padding:0!important;border-radius:50%!important;background:#444!important;font-size:12px!important}
+
+.ref-chip{padding-bottom:20px}.ref-chip select{position:absolute;left:0;bottom:0;width:50px;height:19px;padding:0 2px;border:0;border-radius:4px;background:#303034;color:#eee;font-size:9px}
