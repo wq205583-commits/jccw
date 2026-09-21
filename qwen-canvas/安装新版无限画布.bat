@@ -29,7 +29,7 @@ if not errorlevel 1 (
 where npm >nul 2>nul
 if errorlevel 1 (echo [ERROR] Bun or Node.js/npm is required. & pause & exit /b 1)
 pushd infinite-canvas\web
-call npm install
+call npm install --legacy-peer-deps
 if errorlevel 1 (popd & goto :fail)
 popd
 :done
