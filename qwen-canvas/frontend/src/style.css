@@ -8,3 +8,5 @@
 .editor-ref{overflow-x:auto}.ref-chip{position:relative;display:inline-flex;flex:0 0 auto}.ref-chip img{width:50px;height:50px;object-fit:cover;border-radius:8px}.ref-chip button{position:absolute;right:-5px;top:-5px;width:18px!important;height:18px!important;padding:0!important;border-radius:50%!important;background:#444!important;font-size:12px!important}
 
 .ref-chip{padding-bottom:20px}.ref-chip select{position:absolute;left:0;bottom:0;width:50px;height:19px;padding:0 2px;border:0;border-radius:4px;background:#303034;color:#eee;font-size:9px}
+
+.import-tip{font-size:9px;color:#778398;text-align:center;line-height:1.35;margin:0 2px 8px}
