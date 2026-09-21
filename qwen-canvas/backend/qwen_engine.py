@@ -1,11 +1,19 @@
 import gc,os,random,torch
 from diffusers import QwenImage21Pipeline
-MODEL_ID=os.getenv("QWEN_MODEL","Qwen/Qwen-Image-2.1")
+ROOT=os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+LOCAL_MODEL=os.path.join(ROOT,"models","Qwen-Image-2.1")
+def model_source():
+ configured=os.getenv("QWEN_MODEL","").strip()
+ if configured:return configured
+ if os.path.isfile(os.path.join(LOCAL_MODEL,"model_index.json")):return LOCAL_MODEL
+ return "Qwen/Qwen-Image-2.1"
 class QwenEngine:
  def __init__(self):self.pipe=None
  def load(self):
   if self.pipe is None:
-   self.pipe=QwenImage21Pipeline.from_pretrained(MODEL_ID,torch_dtype=torch.bfloat16)
+   if not torch.cuda.is_available():raise RuntimeError("CUDA unavailable. Run check.bat and verify the NVIDIA PyTorch installation.")
+   source=model_source();print("[Qwen Canvas] Loading model:",source)
+   self.pipe=QwenImage21Pipeline.from_pretrained(source,torch_dtype=torch.bfloat16,local_files_only=os.path.isdir(source))
    self.pipe.enable_model_cpu_offload()
   return self.pipe
  def generate(self,prompt,width=1024,height=1024,steps=30,seed=-1,images=None):
