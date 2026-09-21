@@ -41,7 +41,11 @@ echo ========================================
 echo [OK] Update completed. Starting Qwen Canvas...
 echo ========================================
 timeout /t 2 /nobreak >nul
-call "%~dp0start.bat"
+if exist "%~dp0START-QWEN-CANVAS.bat" (
+ call "%~dp0START-QWEN-CANVAS.bat"
+) else (
+ call "%~dp0start.bat"
+)
 exit /b 0
 :fail
 echo [ERROR] Update failed. Existing local data was preserved.
