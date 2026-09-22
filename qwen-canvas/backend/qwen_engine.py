@@ -16,7 +16,7 @@ class QwenEngine:
    self.pipe=QwenImage21Pipeline.from_pretrained(source,torch_dtype=torch.bfloat16,local_files_only=os.path.isdir(source))
    self.pipe.enable_model_cpu_offload()
   return self.pipe
- def generate(self,prompt,width=1024,height=1024,steps=30,seed=-1,images=None):
+ def generate(self,prompt,width=1024,height=1024,steps=20,seed=-1,images=None):
   pipe=self.load();seed=random.randint(0,2**31-1) if seed<0 else seed;g=torch.Generator("cuda").manual_seed(seed)
   kw=dict(prompt=prompt,width=width,height=height,num_inference_steps=steps,generator=g)
   if images:kw["image"]=images[0] if len(images)==1 else images
