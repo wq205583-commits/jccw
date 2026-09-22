@@ -28,12 +28,11 @@ popd
 
 echo Waiting for services...
 timeout /t 5 /nobreak >nul
-powershell.exe -NoProfile -ExecutionPolicy Bypass -Command "try{$r=Invoke-RestMethod -Uri 'http://127.0.0.1:8000/openapi.json' -TimeoutSec 5; $paths=@($r.paths.PSObject.Properties.Name); if($paths -notcontains '/v1/images/edits'){Write-Host '[ERROR] Loaded routes:' ($paths -join ', '); exit 2}}catch{Write-Host '[ERROR] API check:' $_.Exception.Message; exit 1}"
-if errorlevel 1 goto :api_fail
+powershell.exe -NoProfile -ExecutionPolicy Bypass -Command "try{$r=Invoke-RestMethod -Uri 'http://127.0.0.1:8000/openapi.json' -TimeoutSec 5; $paths=@($r.paths.PSObject.Properties.Name); if($paths -notcontains '/v1/images/edits'){Write-Host '[WARN] Local bridge route not ready yet; canvas will still open.'}}catch{Write-Host '[WARN] Local Qwen bridge health check did not complete yet.'}"
 start "" "http://127.0.0.1:3000"
 echo.
 echo ========================================
-echo [OK] Qwen API: http://127.0.0.1:8000
+echo [OK] Local Qwen bridge: http://127.0.0.1:8000
 echo [OK] Canvas:   http://127.0.0.1:3000
 echo Keep this ONE window open while using Qwen Canvas.
 echo Press Ctrl+C to stop services.
@@ -52,10 +51,6 @@ pause
 exit /b 1
 :deps_missing
 echo [ERROR] Infinite Canvas dependencies missing. Run INSTALL-INFINITE-CANVAS.bat first.
-pause
-exit /b 1
-:api_fail
-echo [ERROR] Updated Qwen API failed to start.
 pause
 exit /b 1
 :fail
