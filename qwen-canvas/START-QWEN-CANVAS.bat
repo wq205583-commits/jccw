@@ -19,7 +19,7 @@ powershell.exe -NoProfile -ExecutionPolicy Bypass -Command "$ports=8000,3000; fo
 timeout /t 1 /nobreak >nul
 
 echo [2/3] Starting Qwen API in background...
-start "" /b cmd /c "cd /d ""%~dp0backend"" && ""%~dp0.venv\Scripts\python.exe"" -m uvicorn qwen_canvas_api:app --host 127.0.0.1 --port 8000"
+start "" /b cmd /c ""%~dp0.venv\Scripts\python.exe" -m uvicorn qwen_canvas_api:app --app-dir "%~dp0backend" --host 127.0.0.1 --port 8000 --log-level info"
 
 echo [3/3] Starting Infinite Canvas in background...
 pushd "%~dp0infinite-canvas\web"
@@ -27,8 +27,8 @@ start "" /b cmd /c "npm run dev"
 popd
 
 echo Waiting for services...
-timeout /t 5 /nobreak >nul
-powershell.exe -NoProfile -ExecutionPolicy Bypass -Command "try{$r=Invoke-RestMethod -Uri 'http://127.0.0.1:8000/openapi.json' -TimeoutSec 5; $paths=@($r.paths.PSObject.Properties.Name); if($paths -notcontains '/v1/images/edits'){Write-Host '[WARN] Local bridge route not ready yet; canvas will still open.'}}catch{Write-Host '[WARN] Local Qwen bridge health check did not complete yet.'}"
+timeout /t 8 /nobreak >nul
+powershell.exe -NoProfile -ExecutionPolicy Bypass -Command "try{$r=Invoke-RestMethod -Uri 'http://127.0.0.1:8000/openapi.json' -TimeoutSec 5; $paths=@($r.paths.PSObject.Properties.Name); if(($paths -notcontains '/v1/images/edits') -or ($paths -notcontains '/v1/images/generations')){Write-Host '[WARN] Local bridge image routes are missing; canvas will still open.'}else{Write-Host '[OK] Local Qwen image routes ready.'}}catch{Write-Host '[WARN] Local Qwen bridge health check did not complete yet.'}"
 start "" "http://127.0.0.1:3000"
 echo.
 echo ========================================
