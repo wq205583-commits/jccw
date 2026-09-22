@@ -19,7 +19,7 @@ powershell.exe -NoProfile -ExecutionPolicy Bypass -Command "$ports=8000,3000; fo
 timeout /t 1 /nobreak >nul
 
 echo [2/3] Starting Qwen API in background...
-start "" /b cmd /c "cd /d ""%~dp0backend"" && ""%~dp0.venv\Scripts\python.exe"" -m uvicorn main:app --host 127.0.0.1 --port 8000"
+start "" /b cmd /c "cd /d ""%~dp0backend"" && ""%~dp0.venv\Scripts\python.exe"" -m uvicorn qwen_canvas_api:app --host 127.0.0.1 --port 8000"
 
 echo [3/3] Starting Infinite Canvas in background...
 pushd "%~dp0infinite-canvas\web"
