@@ -8,7 +8,7 @@ from qwen_engine import engine
 from providers import enhance,status
 from project_store import save,load,list_projects
 ROOT=os.path.dirname(os.path.dirname(os.path.abspath(__file__)));OUTPUT=os.path.join(ROOT,"outputs");os.makedirs(OUTPUT,exist_ok=True)
-app=FastAPI(title="Qwen Canvas API");app.add_middleware(CORSMiddleware,allow_origins=["*"],allow_methods=["*"],allow_headers=["*"])
+print("[Qwen Canvas] Loading local API entry:", __file__, flush=True)\napp=FastAPI(title="Qwen Canvas API");app.add_middleware(CORSMiddleware,allow_origins=["*"],allow_methods=["*"],allow_headers=["*"])
 @app.get("/api/health")
 def health():return {"ok":True,"model":"Qwen/Qwen-Image-2.1","providers":status()}
 @app.post("/api/enhance")
@@ -49,7 +49,7 @@ def _b64_image(image):
     return base64.b64encode(buf.getvalue()).decode("ascii")
 
 @app.post("/v1/images/generations")
-async def openai_image_generate(payload:dict=Body(...)):
+async def openai_image_generate(payload:dict=Body(...)):\n    print("[Qwen Canvas] /v1/images/generations request received", flush=True)
     prompt=str(payload.get("prompt","")).strip()
     width,height=_parse_size(str(payload.get("size","1024x1024")))
     count=max(1,min(int(payload.get("n",1) or 1),4))
@@ -73,7 +73,7 @@ async def openai_image_edit(
     image:List[UploadFile]=File(default=[]),
     images:List[UploadFile]=File(default=[],alias="image[]")
 ):
-    files=(image or [])+(images or [])
+    print("[Qwen Canvas] /v1/images/edits request received", flush=True)\n    files=(image or [])+(images or [])
     refs=[]
     for f in files[:10]:
         refs.append(Image.open(io.BytesIO(await f.read())).convert("RGBA"))
