@@ -24,7 +24,7 @@ def load_project(name:str):
  try:return load(name.replace(".json",""))
  except Exception as e:return {"error":str(e)}
 @app.post("/api/generate")
-async def generate(prompt:str=Form(...),mode:str=Form("generate"),width:int=Form(1024),height:int=Form(1024),steps:int=Form(30),seed:int=Form(-1),transparent:bool=Form(False),images:List[UploadFile]=File(default=[])):
+async def generate(prompt:str=Form(...),mode:str=Form("generate"),width:int=Form(1024),height:int=Form(1024),steps:int=Form(20),seed:int=Form(-1),transparent:bool=Form(False),images:List[UploadFile]=File(default=[])):
  refs=[]
  for f in images[:10]:refs.append(Image.open(io.BytesIO(await f.read())).convert("RGBA"))
  if transparent and "RGBA image with transparency" not in prompt:prompt=f"This is an RGBA image with transparency. {prompt}. The image has alpha channel and the background is transparent."
@@ -59,7 +59,7 @@ async def openai_image_generate(payload:dict=Body(...)):
     try:
         data=[]
         for _ in range(count):
-            image,_seed=engine.generate(prompt,width,height,30,-1,[])
+            image,_seed=engine.generate(prompt,width,height,20,-1,[])
             data.append({"b64_json":_b64_image(image)})
         return {"created":0,"data":data}
     except Exception as e:
@@ -84,7 +84,7 @@ async def openai_image_edit(
     try:
         data=[]
         for _ in range(max(1,min(n,4))):
-            out,_seed=engine.generate(prompt,width,height,30,-1,refs)
+            out,_seed=engine.generate(prompt,width,height,20,-1,refs)
             data.append({"b64_json":_b64_image(out)})
         return {"created":0,"data":data}
     except Exception as e:
