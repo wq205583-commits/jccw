@@ -19,7 +19,7 @@ powershell.exe -NoProfile -ExecutionPolicy Bypass -Command "$ports=8000,3000; fo
 timeout /t 1 /nobreak >nul
 
 echo [2/3] Starting Qwen API in background...
-start "" /b "%~dp0.venv\Scripts\python.exe" -m uvicorn main:app --app-dir "%~dp0backend" --host 127.0.0.1 --port 8000
+start "" /b cmd /c "cd /d ""%~dp0backend"" && ""%~dp0.venv\Scripts\python.exe"" -m uvicorn main:app --host 127.0.0.1 --port 8000"
 
 echo [3/3] Starting Infinite Canvas in background...
 pushd "%~dp0infinite-canvas\web"
@@ -28,7 +28,7 @@ popd
 
 echo Waiting for services...
 timeout /t 5 /nobreak >nul
-powershell.exe -NoProfile -ExecutionPolicy Bypass -Command "try{$r=Invoke-RestMethod -Uri 'http://127.0.0.1:8000/openapi.json' -TimeoutSec 5; if(-not ($r.paths.PSObject.Properties.Name -contains '/v1/images/edits')){exit 2}}catch{exit 1}"
+powershell.exe -NoProfile -ExecutionPolicy Bypass -Command "try{$r=Invoke-RestMethod -Uri 'http://127.0.0.1:8000/openapi.json' -TimeoutSec 5; $paths=@($r.paths.PSObject.Properties.Name); if($paths -notcontains '/v1/images/edits'){Write-Host '[ERROR] Loaded routes:' ($paths -join ', '); exit 2}}catch{Write-Host '[ERROR] API check:' $_.Exception.Message; exit 1}"
 if errorlevel 1 goto :api_fail
 start "" "http://127.0.0.1:3000"
 echo.
